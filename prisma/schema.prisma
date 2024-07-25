@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// "@"" campo
+// "@@"" tabela
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+model User {
+  id            String     @id @default(uuid())
+  name          String
+  email         String     @unique
+  passwordHash  String     @map("password_hash")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  questions     Question[]
+  answers       Answer[]
+
+  @@map("users")
+}
+
+// Question model
+model Question {
+  id          String     @id @default(uuid())
+  title       String
+  content     String
+  tags        String
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  authorId    String
+  author      User       @relation(fields: [authorId], references: [id])
+  answers     Answer[]
+
+  @@map("questions")
+}
+
+// Answer model
+model Answer {
+  id          String     @id @default(uuid())
+  content     String
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  authorId    String
+  author      User       @relation(fields: [authorId], references: [id])
+  questionId  String
+  question    Question   @relation(fields: [questionId], references: [id])
+
+  @@map("answers")
+}
