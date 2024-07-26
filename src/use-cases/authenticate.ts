@@ -5,31 +5,29 @@ import { User } from "@prisma/client";
 
 // DTOs
 interface AuthenticateUseCaseRequest {
-    email: string,
-    password: string
+  email: string;
+  password: string;
 }
 
 interface AuthenticateUseCaseResponse {
-    user: User
+  user: User;
 }
 
 export class AuthenticateUseCase {
-    constructor(
-        private userRepository: UserRepository
-    ) { }
+  constructor(private userRepository: UserRepository) {}
 
-    async execute({ email, password }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-        const user = await this.userRepository.findByEmail(email)
-        if (!user)
-            throw new InvalidCredentialsError()
+  async execute({
+    email,
+    password,
+  }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) throw new InvalidCredentialsError();
 
+    const doesPasswordMatches = await compare(password, user.passwordHash);
+    if (!doesPasswordMatches) throw new InvalidCredentialsError();
 
-        const doesPasswordMatches = await compare(password, user.password_hash)
-        if (!doesPasswordMatches)
-            throw new InvalidCredentialsError()
-
-        return {
-            user
-        }
-    }
+    return {
+      user,
+    };
+  }
 }
