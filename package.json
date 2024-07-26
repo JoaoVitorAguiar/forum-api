@@ -1,7 +1,7 @@
 {
-  "name": "03-api-solid",
+  "name": "forum-api",
   "version": "1.0.0",
-  "description": "Gympass style app",
+  "description": "Forum Api",
   "main": "index.js",
   "scripts": {
     "start:dev": "tsx watch src/server.ts",

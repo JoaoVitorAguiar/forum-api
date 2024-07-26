@@ -11,6 +11,12 @@ export class PrismaQuestionRepository implements QuestionRepository {
     return prisma.question.findUnique({ where: { id: questionId } });
   }
 
+  async findByIdWithAnswers(questionId: string): Promise<Question | null> {
+    return prisma.question.findUnique({
+      where: { id: questionId },
+      include: { answers: true }, // Inclui as respostas relacionadas
+    });
+  }
   async findAll(): Promise<Question[]> {
     return prisma.question.findMany();
   }
