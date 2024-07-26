@@ -18,7 +18,7 @@ Este projeto é uma API para um sistema de fórum utilizando Fastify, Prisma, My
 
    ```bash
    git clone https://github.com/JoaoVitorAguiar/forum-api.git
-   cd seu-repositorio
+   cd forum-api
    ```
 
 2. **Configure o Docker Compose**
