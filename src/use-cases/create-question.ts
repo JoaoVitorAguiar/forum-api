@@ -8,7 +8,7 @@ interface CreateQuestionUseCaseRequest {
   userId: string; // ID do usuário logado
   title: string;
   content: string;
-  tags: string; // Tags como uma string separada por vírgulas
+  tags: string[]; // Tags como um array de strings
 }
 
 interface CreateQuestionUseCaseResponse {
@@ -27,18 +27,17 @@ export class CreateQuestionUseCase {
     content,
     tags,
   }: CreateQuestionUseCaseRequest): Promise<CreateQuestionUseCaseResponse> {
-    // Verifique se o usuário existe
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new ResourceNotFoundError();
     }
+    const tagsString = tags.join(",");
 
-    // Crie a nova pergunta
     const question = await this.questionRepository.create({
       title,
       content,
       author: { connect: { id: userId } },
-      tags, // Tags como uma string
+      tags: tagsString,
     });
 
     return {

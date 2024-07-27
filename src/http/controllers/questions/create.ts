@@ -5,7 +5,7 @@ import { makeCreateQuestionUseCase } from "@/use-cases/factories/make-create-que
 const createQuestionBodySchema = z.object({
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
-  tags: z.string(),
+  tags: z.array(z.string()),
 });
 
 export async function createQuestion(
@@ -25,7 +25,7 @@ export async function createQuestion(
     });
 
     return reply.status(201).send({
-      question,
+      id: question.id,
     });
   } catch (error) {
     throw error;
