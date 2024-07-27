@@ -15,10 +15,28 @@ export class PrismaQuestionRepository implements QuestionRepository {
     return prisma.question.findUnique({
       where: { id: questionId },
       include: {
-        author: true, // Inclui os detalhes do autor da pergunta
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
         answers: {
           include: {
-            author: true, // Inclui os detalhes do autor das respostas
+            author: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+            },
           },
         },
       },
