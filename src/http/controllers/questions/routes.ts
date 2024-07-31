@@ -2,6 +2,7 @@ import { verifyJwt } from "@/http/middlewares/verify-jwt";
 import { FastifyInstance } from "fastify";
 import { createQuestion } from "./create";
 import { getQuestionWithAnswers } from "./get";
+import { getAllQuestions } from "./getAll";
 
 export async function questionsRoutes(app: FastifyInstance) {
   /** Authenticated */
@@ -11,4 +12,7 @@ export async function questionsRoutes(app: FastifyInstance) {
     { onRequest: [verifyJwt] },
     getQuestionWithAnswers
   );
+
+  app.get('/questions', getAllQuestions);
+
 }
