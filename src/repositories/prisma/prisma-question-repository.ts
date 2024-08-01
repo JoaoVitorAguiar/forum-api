@@ -44,7 +44,20 @@ export class PrismaQuestionRepository implements QuestionRepository {
   }
 
   async findAll(): Promise<Question[]> {
-    return prisma.question.findMany();
+    return prisma.question.findMany({
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+        answers: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
   }
 
   async update(
