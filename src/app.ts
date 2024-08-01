@@ -6,6 +6,7 @@ import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
 import { questionsRoutes } from "./http/controllers/questions/routes";
 import { answersRoutes } from "./http/controllers/answer/routes";
+import fastifyCors from "@fastify/cors";
 
 export const app = fastify();
 
@@ -21,6 +22,9 @@ app.register(fastifyJwt, {
 });
 
 app.register(fastifyCookie);
+app.register(fastifyCors, {
+  origin: "http://localhost:5173",
+});
 
 app.register(usersRoutes);
 app.register(questionsRoutes);
