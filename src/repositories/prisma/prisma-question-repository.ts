@@ -42,9 +42,16 @@ export class PrismaQuestionRepository implements QuestionRepository {
       },
     });
   }
-
-  async findAll(): Promise<Question[]> {
+  async findAll(name?: string, tag?: string): Promise<Question[]> {
     return prisma.question.findMany({
+      where: {
+        title: {
+          contains: name,
+        },
+        tags: {
+          contains: tag,
+        },
+      },
       include: {
         author: {
           select: {
