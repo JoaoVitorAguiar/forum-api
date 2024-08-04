@@ -1,18 +1,14 @@
 import { makeGetAllQuestionsUseCase } from "@/use-cases/factories/make-get-all-questions-use-case";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function getAllQuestions(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
+export async function getAllQuestions(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const { name, tag } = request.query as { name?: string, tag?: string };
+    const { name, tag, page = 1, perPage = 5 } = request.query as any;
     const getAllQuestionsUseCase = makeGetAllQuestionsUseCase();
-    const questions = await getAllQuestionsUseCase.execute(name, tag);
+    const { questions, totalPages } = await getAllQuestionsUseCase.execute({ name, tag, page, perPage });
 
-    return reply.status(200).send(questions);
+    return reply.status(200).send({ questions, totalPages });
   } catch (error) {
     return reply.status(500).send({ message: "An unexpected error occurred." });
   }
 }
-
