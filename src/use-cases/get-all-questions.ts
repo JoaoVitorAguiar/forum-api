@@ -1,16 +1,16 @@
 import { PrismaQuestionRepository } from "@/repositories/prisma/prisma-question-repository";
-import { ResourceNotFoundError } from "./erros/resource-not-found-error";
 
 export class GetAllQuestionsUseCase {
   constructor(private questionRepository: PrismaQuestionRepository) {}
 
-  async execute(name?: string, tag?: string) {
-    const questions = await this.questionRepository.findAll(name, tag);
+  async execute({ name, tag, page, perPage }: { name?: string, tag?: string, page: number, perPage: number }) {
+    if (page < 1) page = 1;
+    if (perPage < 1) perPage = 5;
 
-    if (!questions || questions.length === 0) {
-      throw new ResourceNotFoundError();
-    }
+    const { questions, total } = await this.questionRepository.findAll(name, tag, page, perPage);
 
-    return questions;
+    const totalPages = Math.ceil(total / perPage);
+
+    return { questions, totalPages };
   }
 }
