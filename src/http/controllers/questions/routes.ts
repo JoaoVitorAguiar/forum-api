@@ -13,6 +13,5 @@ export async function questionsRoutes(app: FastifyInstance) {
     getQuestionWithAnswers
   );
 
-  app.get('/questions', getAllQuestions);
-
+  app.get("/questions", getAllQuestions);
 }

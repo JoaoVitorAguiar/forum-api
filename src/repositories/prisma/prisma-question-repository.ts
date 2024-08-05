@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { Prisma, Question } from "@prisma/client";
 import { QuestionRepository } from "../question-repository";
 
-
 export class PrismaQuestionRepository implements QuestionRepository {
   async create(data: Prisma.QuestionCreateInput): Promise<Question> {
     return prisma.question.create({ data });
@@ -44,9 +43,18 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
   }
 
-  async findAll(name?: string, tag?: string, page?: number, pageSize?: number): Promise<{ questions: Question[], total: number }> {
-    const skip = (page ? page - 1 : 0) * (pageSize ?? 5);
-    const take = pageSize ?? 5;
+  async findAll(
+    name?: string,
+    tag?: string,
+    page?: number,
+    pageSize?: number,
+    authorId?: string
+  ): Promise<{ questions: Question[]; total: number }> {
+    const currentPage = page ?? 1;
+    const currentPageSize = pageSize ?? 5;
+
+    const skip = (currentPage - 1) * currentPageSize;
+    const take = currentPageSize;
 
     const where: Prisma.QuestionWhereInput = {
       ...(name && {
@@ -58,6 +66,9 @@ export class PrismaQuestionRepository implements QuestionRepository {
         tags: {
           contains: tag,
         },
+      }),
+      ...(authorId && {
+        authorId: authorId,
       }),
     };
 
@@ -84,7 +95,10 @@ export class PrismaQuestionRepository implements QuestionRepository {
     return { questions, total };
   }
 
-  async update(questionId: string, data: Prisma.QuestionUpdateInput): Promise<Question> {
+  async update(
+    questionId: string,
+    data: Prisma.QuestionUpdateInput
+  ): Promise<Question> {
     return prisma.question.update({
       where: { id: questionId },
       data,
